@@ -75,7 +75,7 @@
 				<div class="sidebar-nav">
 				  <div class="navbar navbar-default" role="navigation">
 					  <ul class="nav navbar-nav">
-						<li class="active"><a href="#">Home</a></li>
+						<li class="active"><a href="index.php">Home</a></li>
 						<li><a href="route.php">Route Info</a></li>
 						<li><a href="#">Menu Item 3</a></li>
 						<li><a href="#">Menu Item 4</a></li>
@@ -87,36 +87,103 @@
 			<div class="col-lg-9 col-sm-9">
 				<div class="jumbotron" style="background-color:#558C89; margin:0">
 					<div class="container">
-						<h3 align="center" style="padding-bottom:20px;"><b>ADMIN LOGIN</b></h3>
-						<form action="#" method="post" name="admin_form" role="form">
-							<div class="form-group">
+						<fieldset>
+							<legend align="center"><b>SEE BUS ROUTE INFORMATION</b></legend>
+							<br><br>
+							<form action="#" method="post">
 								<div class="row">
-									<div class="col-lg-3 col-sm-3"></div>
-									<div class="input-group margin-bottom-sm col-lg-6 col-sm-6">
-										<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-										<input type="email" class="form-control" id="email" placeholder="Email address">
+									<div class="col-lg-2 col-md-2"></div>
+									<div class="col-lg-6 col-md-6">
+										<select class="form-control" id="route" name="route" required style="width: 50%" >
+											<option>Select Route</option>
+												<?php
+													$result = mysqli_query($conn,"SELECT * FROM univ_info");
+													$row = mysqli_fetch_assoc($result);
+													while($row)
+													{
+														echo '<option>'.$row['University'].'</option>';
+														$row = mysqli_fetch_assoc($result);
+													}
+												?>
+										</select>
 									</div>
-									<div class="col-lg-3 col-sm-3"></div>
+						
+									<div class="col-lg-2 col-md-2">
+										<button class="btn btn-danger" type="submit" class="btn btn-default">SHOW</button>
+									</div>
+									<div class="col-lg-2 col-md-2"></div>
 								</div>
-							</div>
-							<div class="form-group">
+							</form>
+						</fieldset>
+						<br><br><br><br>
+						<fieldset>
+							<legend align="center"><b>FIND BUSES BETWEEN TWO STOPS</b></legend>
+							<br><br>
+							<form action="#" method="post">
 								<div class="row">
-									<div class="col-lg-3 col-sm-3"></div>
-									<div class="input-group margin-bottom-sm col-lg-6 col-sm-6">
-									  <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-									  <input id="password" class="form-control" type="password" placeholder="Password">
+									<div class="col-lg-5 col-md-5">
+										<select class="form-control" id="route" name="route" required style="width: 50%" >
+											<option>Select Source</option>
+												<?php
+													$result = mysqli_query($conn,"SELECT * FROM univ_info");
+													$row = mysqli_fetch_assoc($result);
+													while($row)
+													{
+														echo '<option>'.$row['University'].'</option>';
+														$row = mysqli_fetch_assoc($result);
+													}
+												?>
+										</select>
 									</div>
-									<div class="col-lg-3 col-sm-3"></div>
+									<div class="col-lg-5 col-md-5">
+										<select class="form-control" id="route" name="route" required style="width: 50%" >
+											<option>Select Destination</option>
+												<?php
+													$result = mysqli_query($conn,"SELECT * FROM univ_info");
+													$row = mysqli_fetch_assoc($result);
+													while($row)
+													{
+														echo '<option>'.$row['University'].'</option>';
+														$row = mysqli_fetch_assoc($result);
+													}
+												?>
+										</select>
+									</div>
+									<div class="col-lg-2 col-md-2">
+										<button class="btn btn-danger" type="submit" class="btn btn-default">SHOW</button>
+									</div>
 								</div>
-							</div>
-							<div class="row">
-								<div class="col-lg-3 col-sm-3"></div>
-								<div class="input-group margin-bottom-sm col-lg-6 col-sm-6" align="center">
-									<button class="btn btn-danger" type="submit" class="btn btn-default">Submit</button>
+							</form>
+						</fieldset>
+						<br><br><br><br>
+						<fieldset>
+							<legend align="center"><b>SEE WHICH BUS GOES TO A PARTICULAR STOP</b></legend>
+							<br><br>
+							<form action="#" method="post">
+								<div class="row">
+									<div class="col-lg-2 col-md-2"></div>
+									<div class="col-lg-6 col-md-6">
+										<select class="form-control" id="route" name="route" required style="width: 50%" >
+											<option>Select Destination</option>
+												<?php
+													$result = mysqli_query($conn,"SELECT * FROM univ_info");
+													$row = mysqli_fetch_assoc($result);
+													while($row)
+													{
+														echo '<option>'.$row['University'].'</option>';
+														$row = mysqli_fetch_assoc($result);
+													}
+												?>
+										</select>
+									</div>
+						
+									<div class="col-lg-2 col-md-2">
+										<button class="btn btn-danger" type="submit" class="btn btn-default">SHOW</button>
+									</div>
+									<div class="col-lg-2 col-md-2"></div>
 								</div>
-								<div class="col-lg-3 col-sm-3"></div>
-							</div>	
-						</form>
+							</form>
+						</fieldset>
 					</div>
 				</div>
 			</div>
