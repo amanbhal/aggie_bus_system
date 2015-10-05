@@ -77,7 +77,7 @@
 					  <ul class="nav navbar-nav">
 						<li><a href="index.php">Home</a></li>
 						<li><a href="route.php">Route Info</a></li>
-						<li><a href="update_route.php">Update Routes</a></li>
+						<li><a href="#">Update Routes</a></li>
 						<li><a href="#">Add/Remove Drivers</a></li>
 						<!--<li><a href="#">Reviews <span class="badge">1,118</span></a></li>-->
 					  </ul>
@@ -88,31 +88,73 @@
 				<div class="jumbotron" style="background-color:#558C89; margin:0">
 					<div class="container">
 						<fieldset>
-							<legend align="center"><b>SEE BUS ROUTE INFORMATION</b></legend>
+							<legend align="center"><b>ADD A ROUTE</b></legend>
 							<br><br>
 							<form action="#" method="post">
 								<div class="row">
-									<div class="col-lg-2 col-md-2"></div>
-									<div class="col-lg-6 col-md-6">
-										<select class="form-control" id="route" name="route" required style="width: 50%" >
-											<option>Select Route</option>
-												<?php
-													$conn = mysqli_connect("localhost","root","","aggie_spirit")	 or die("Could not connect to database!");
-													$result = mysqli_query($conn,"SELECT DISTINCT(number), name FROM route");
-													$row = mysqli_fetch_assoc($result);
-													while($row)
-													{
-														echo '<option>'.'#'.$row['number'].' -> '.$row['name'].'</option>';
-														$row = mysqli_fetch_assoc($result);
-													}
-												?>
-										</select>
+									<div class="col-lg-2 col-md-2" style="padding-right:5px">
+										<input type="text" name="number" placeholder="Route Number">
 									</div>
-						
+									<div class="col-lg-2 col-md-2"></div>
 									<div class="col-lg-2 col-md-2">
-										<button class="btn btn-danger" type="submit" class="btn btn-default">SHOW</button>
+										<input type="text" name="name" placeholder="Route Name">
 									</div>
 									<div class="col-lg-2 col-md-2"></div>
+									<div class="col-lg-2 col-md-2">
+										<input type="number" name="no_of_bus" placeholder="No. of buses">
+									</div>
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-lg-2 col-md-2">
+										<input type="number" name="interval" placeholder="Bus Interval">
+									</div>
+									<div class="col-lg-2 col-md-2"></div>
+									<div class="col-lg-2 col-md-2">
+										<input type="text" name="starting_point" placeholder="Starting Point">
+									</div>
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-lg-8"></div>
+									<button class="btn btn-success" id="add_stops" onclick=duplicate() type="button" class="btn btn-default">ADD STOPS</button>
+									<button class="btn btn-warning" id="add_stops" onclick=remove() type="button" class="btn btn-default">REMOVE STOPS</button>
+								</div>
+								<br>
+								<div class="row">
+									<ul id="add_list" style="list-style:none">
+										<li id="duplicater0">
+											<select class="form-control" id="update_route0" name="stop0" required style="width: 50%" >
+												<option>Select Source</option>
+													<?php
+														$conn = mysqli_connect("localhost","root","","aggie_spirit")	 or die("Could not connect to database!");
+														$result = mysqli_query($conn,"SELECT stop_name FROM stops");
+														$row = mysqli_fetch_assoc($result);
+														while($row)
+														{
+															echo '<option>'.$row['stop_name'].'</option>';
+															$row = mysqli_fetch_assoc($result);
+														}
+													?>
+											</select>
+											<br>
+										</li>
+									</ul>
+										<script>
+											var i=0;
+											function duplicate() {
+												var original = document.getElementById('duplicater' + i);
+												var clone = original.cloneNode(true); // "deep" clone
+												clone.id = "duplicater" + ++i; // there can only be one element with an ID
+												//clone.onclick = duplicate; // event handlers are not cloned
+												original.parentNode.appendChild(clone);
+												var new_elem_id = '#duplicater' + i;
+												$(new_elem_id.)
+											}
+										</script>
+								</div>
+								<div class="row" align="center">
+									<button class="btn btn-danger" type="submit" class="btn btn-default">SUBMIT</button>
 								</div>
 							</form>
 						</fieldset>

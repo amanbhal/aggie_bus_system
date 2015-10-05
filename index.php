@@ -53,7 +53,10 @@
 				.sidebar-nav .navbar li.active a:hover {
 					background-color: #CBE32D;
 					color:black;
-					font-color: #000;
+				}
+				.sidebar-nav .navbar li.active a {
+					background-color: #CBE32D;
+					color:black;
 				}
 			}
 		</style>
@@ -75,11 +78,11 @@
 				<div class="sidebar-nav">
 				  <div class="navbar navbar-default" role="navigation">
 					  <ul class="nav navbar-nav">
-						<li class="active"><a href="#">Home</a></li>
+						<li><a href="#">Home</a></li>
 						<li><a href="route.php">Route Info</a></li>
-						<li><a href="#">Menu Item 3</a></li>
-						<li><a href="#">Menu Item 4</a></li>
-						<li><a href="#">Reviews <span class="badge">1,118</span></a></li>
+						<li><a href="#">Update Routes</a></li>
+						<li><a href="#">Add/Remove Drivers</a></li>
+						<!--<li><a href="#">Reviews <span class="badge">1,118</span></a></li>-->
 					  </ul>
 				  </div>
 				</div>
