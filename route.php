@@ -1,3 +1,10 @@
+<?php
+	session_start();
+	$mysql_host = "mysql13.000webhost.com";
+	$mysql_database = "a9876784_aggies";
+	$mysql_user = "a9876784_aman";
+	$mysql_password = "nationdie22";
+?>
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -76,9 +83,9 @@
 				  <div class="navbar navbar-default" role="navigation">
 					  <ul class="nav navbar-nav">
 						<li><a href="index.php">Home</a></li>
-						<li><a href="route.php">Route Info</a></li>
-						<li><a href="update_route.php">Update Routes</a></li>
-						<li><a href="#">Add/Remove Drivers</a></li>
+						<li><a href="#">Route Info</a></li>
+						<?php if($_SESSION['enter']=="true"){echo '<li><a href="update_route.php">Update Routes</a></li>
+						<li><a href="drivers.php">Add/Remove Drivers</a></li>';}?>
 						<!--<li><a href="#">Reviews <span class="badge">1,118</span></a></li>-->
 					  </ul>
 				  </div>
@@ -87,104 +94,250 @@
 			<div class="col-lg-9 col-sm-9">
 				<div class="jumbotron" style="background-color:#558C89; margin:0">
 					<div class="container">
-						<fieldset>
-							<legend align="center"><b>SEE BUS ROUTE INFORMATION</b></legend>
-							<br><br>
-							<form action="#" method="post">
-								<div class="row">
-									<div class="col-lg-2 col-md-2"></div>
-									<div class="col-lg-6 col-md-6">
-										<select class="form-control" id="route" name="route" required style="width: 50%" >
-											<option>Select Route</option>
-												<?php
-													$conn = mysqli_connect("localhost","root","","aggie_spirit")	 or die("Could not connect to database!");
-													$result = mysqli_query($conn,"SELECT DISTINCT(number), name FROM route");
-													$row = mysqli_fetch_assoc($result);
-													while($row)
-													{
-														echo '<option>'.'#'.$row['number'].' -> '.$row['name'].'</option>';
+						<div class="route1">
+							<fieldset>
+								<legend align="center"><b>SEE BUS ROUTE INFORMATION</b></legend>
+								<br><br>
+								<form action="#" method="post">
+									<div class="row">
+										<div class="col-lg-2 col-md-2"></div>
+										<div class="col-lg-6 col-md-6">
+											<select class="form-control" id="route" name="route" required style="width: 50%" >
+												<option>Select Route</option>
+													<?php
+														$conct = mysqli_connect($mysql_host,$mysql_user,$mysql_password,$mysql_database)	 or die("Could not connect to database!");
+														$result = mysqli_query($conct,"SELECT DISTINCT(number), name FROM route");
 														$row = mysqli_fetch_assoc($result);
+														while($row)
+														{
+															echo '<option>'.$row['number'].'</option>';
+															$row = mysqli_fetch_assoc($result);
+														}
+													?>
+											</select>
+										</div>
+							
+										<div class="col-lg-2 col-md-2">
+											<button class="btn btn-danger" type="submit" class="btn btn-default">SHOW</button>
+										</div>
+										<div class="col-lg-2 col-md-2"></div>
+									</div>
+								</form>
+							</fieldset>
+							<br><br>
+							<?php if(isset($_POST['route'])){ ?><div class="route1_show jumbotron container">
+								<?php
+									if(isset($_POST['route'])) {
+										$result1 = mysqli_query($conct,"SELECT * FROM route JOIN stops ON route.stop_id=stops.stop_id WHERE number = '".$_POST['route']."'");
+										$row1 = mysqli_fetch_assoc($result1);
+										echo '
+											<div class="row">
+												<div class="col-lg-2"><p>Number: '.$row1['number'].'</p></div>
+												<div class="col-lg-3"><p>Name: '.$row1['name'].'</p></div>
+												<div class="col-lg-2"><p>No. of buses: '.$row1['no_of_buses'].'</p></div>
+												<div class="col-lg-2"><p>Interval: '.$row1['intervals'].'mins</p></div>
+												<div class="col-lg-3"><p>Starting Point: '.$row1['starting_point'].'</p></div>
+											</div>
+										';
+										echo '
+											<table class="table">
+												<tr>
+													<th>Stops
+												</tr>
+												'; $alternate=true; 
+												while($row1) {
+													if($alternate==true) {
+														echo '
+														<tr class="success">
+															<td>'.$row1['stop_name'].'
+														</tr>
+													';
+													$alternate=false;
 													}
-												?>
-										</select>
-									</div>
-						
-									<div class="col-lg-2 col-md-2">
-										<button class="btn btn-danger" type="submit" class="btn btn-default">SHOW</button>
-									</div>
-									<div class="col-lg-2 col-md-2"></div>
-								</div>
-							</form>
-						</fieldset>
+													else {
+														echo '
+														<tr>
+															<td>'.$row1['stop_name'].'
+														</tr>
+													';
+													$alternate=true;
+													}
+													$row1 = mysqli_fetch_assoc($result1);
+												}
+										echo '
+											</table>
+										';
+									}
+								?>
+							</div> <?php } ?>
+						</div>
 						<br><br><br><br>
-						<fieldset>
-							<legend align="center"><b>FIND BUSES BETWEEN TWO STOPS</b></legend>
+						<div class="route2">
+							<fieldset>
+								<legend align="center"><b>FIND BUSES BETWEEN TWO STOPS</b></legend>
+								<br><br>
+								<form action="#" method="post">
+									<div class="row">
+										<div class="col-lg-5 col-md-5">
+											<select class="form-control" name="route2_source" required style="width: 50%" >
+												<option>Select Source</option>
+													<?php
+														$result = mysqli_query($conct,"SELECT stop_name FROM stops WHERE stop_name<>'MSC_Trigon'");
+														$row = mysqli_fetch_assoc($result);
+														while($row)
+														{
+															echo '<option>'.$row['stop_name'].'</option>';
+															$row = mysqli_fetch_assoc($result);
+														}
+													?>
+											</select>
+										</div>
+										<div class="col-lg-5 col-md-5">
+											<select class="form-control" name="route2_dest" required style="width: 50%" >
+												<option>Select Destination</option>
+													<?php
+														$result = mysqli_query($conct,"SELECT stop_name FROM stops WHERE stop_name<>'MSC_Trigon'");
+														$row = mysqli_fetch_assoc($result);
+														while($row)
+														{
+															echo '<option>'.$row['stop_name'].'</option>';
+															$row = mysqli_fetch_assoc($result);
+														}
+													?>
+											</select>
+										</div>
+										<div class="col-lg-2 col-md-2">
+											<button class="btn btn-danger" type="submit" class="btn btn-default">SHOW</button>
+										</div>
+									</div>
+								</form>
+							</fieldset>
 							<br><br>
-							<form action="#" method="post">
-								<div class="row">
-									<div class="col-lg-5 col-md-5">
-										<select class="form-control" id="route" name="route" required style="width: 50%" >
-											<option>Select Source</option>
-												<?php
-													$result = mysqli_query($conn,"SELECT stop_name FROM stops");
-													$row = mysqli_fetch_assoc($result);
-													while($row)
-													{
-														echo '<option>'.$row['stop_name'].'</option>';
-														$row = mysqli_fetch_assoc($result);
+							<?php if(isset($_POST['route2_source'])){ ?><div class="route2_show jumbotron container">
+								<?php
+									if(isset($_POST['route2_source'])) {
+										if($_POST['route2_source']!="Select Source" and $_POST['route2_dest']!="Select Destination") {
+											$query = "SELECT number, name, stop_name FROM route JOIN stops ON stops.stop_id=route.stop_id WHERE stop_name='".$_POST['route2_source']."' UNION SELECT number, name, stop_name FROM route JOIN stops ON stops.stop_id=route.stop_id WHERE stop_name='".$_POST['route2_dest']."'";
+											$result1 = mysqli_query($conct,$query);
+											$row1 = array();
+											$row1 = mysqli_fetch_assoc($result1);
+											echo '
+											<table class="table">
+												<tr>
+													<th>Route Number
+													<th>Route Name
+													<th>Boarding/De-boarding Stop
+													<th>Common Stop
+												</tr>
+												'; $alternate=true; 
+												while($row1) {
+													if($alternate==true) {
+														echo '
+														<tr class="success">
+															<td>'.$row1['number'].'
+															<td>'.$row1['name'].'
+															<td>'.$row1['stop_name'].'
+															<td>MSC_Trigon
+														</tr>
+													';
+													$alternate=false;
 													}
-												?>
-										</select>
-									</div>
-									<div class="col-lg-5 col-md-5">
-										<select class="form-control" id="route" name="route" required style="width: 50%" >
-											<option>Select Destination</option>
-												<?php
-													$result = mysqli_query($conn,"SELECT stop_name FROM stops");
-													$row = mysqli_fetch_assoc($result);
-													while($row)
-													{
-														echo '<option>'.$row['stop_name'].'</option>';
-														$row = mysqli_fetch_assoc($result);
+													else {
+														echo '
+														<tr>
+															<td>'.$row1['number'].'
+															<td>'.$row1['name'].'
+															<td>'.$row1['stop_name'].'
+															<td>MSC_Trigon
+														</tr>
+													';
+													$alternate=true;
 													}
-												?>
-										</select>
-									</div>
-									<div class="col-lg-2 col-md-2">
-										<button class="btn btn-danger" type="submit" class="btn btn-default">SHOW</button>
-									</div>
-								</div>
-							</form>
-						</fieldset>
+													$row1 = mysqli_fetch_assoc($result1);
+												}
+											echo '
+												</table>
+											';
+										}
+									}
+								?>
+							</div> <?php } ?>
+						</div>
 						<br><br><br><br>
-						<fieldset>
-							<legend align="center"><b>SEE WHICH BUS GOES THROUGH A PARTICULAR STOP</b></legend>
-							<br><br>
-							<form action="#" method="post">
-								<div class="row">
-									<div class="col-lg-2 col-md-2"></div>
-									<div class="col-lg-6 col-md-6">
-										<select class="form-control" id="route" name="route" required style="width: 50%" >
-											<option>Select Destination</option>
-												<?php
-													$result = mysqli_query($conn,"SELECT stop_name FROM stops");
-													$row = mysqli_fetch_assoc($result);
-													while($row)
-													{
-														echo '<option>'.$row['stop_name'].'</option>';
+						<div class="route3">
+							<fieldset>
+								<legend align="center"><b>SEE WHICH BUS GOES THROUGH A PARTICULAR STOP</b></legend>
+								<br><br>
+								<form action="#" method="post">
+									<div class="row">
+										<div class="col-lg-2 col-md-2"></div>
+										<div class="col-lg-6 col-md-6">
+											<select class="form-control" name="route3_dest" style="width: 50%" >
+												<option>Select Destination</option>
+													<?php
+														$result = mysqli_query($conct,"SELECT stop_name FROM stops");
 														$row = mysqli_fetch_assoc($result);
+														while($row)
+														{
+															echo '<option>'.$row['stop_name'].'</option>';
+															$row = mysqli_fetch_assoc($result);
+														}
+													?>
+											</select>
+										</div>
+							
+										<div class="col-lg-2 col-md-2">
+											<button class="btn btn-danger" type="submit" class="btn btn-default">SHOW</button>
+										</div>
+										<div class="col-lg-2 col-md-2"></div>
+									</div>
+								</form>
+							</fieldset>
+							<br><br>
+							<?php if(isset($_POST['route3_dest'])){ ?><div class="route3_show jumbotron container">
+								<?php
+									if(isset($_POST['route3_dest'])) {
+										if($_POST['route3_dest']!="Select Destination") {
+											$query = "SELECT number, name FROM route JOIN stops ON stops.stop_id=route.stop_id WHERE stop_name='".$_POST['route3_dest']."'";
+											$result1 = mysqli_query($conct,$query);
+											$row1 = array();
+											$row1 = mysqli_fetch_array($result1);
+											echo '
+											<table class="table">
+												<tr>
+													<th>Route Number
+													<th>Route Name
+												</tr>
+												'; $alternate=true; 
+												while($row1) {
+													if($alternate==true) {
+														echo '
+														<tr class="success">
+															<td>'.$row1['number'].'
+															<td>'.$row1['name'].'
+														</tr>
+													';
+													$alternate=false;
 													}
-												?>
-										</select>
-									</div>
-						
-									<div class="col-lg-2 col-md-2">
-										<button class="btn btn-danger" type="submit" class="btn btn-default">SHOW</button>
-									</div>
-									<div class="col-lg-2 col-md-2"></div>
-								</div>
-							</form>
-						</fieldset>
+													else {
+														echo '
+														<tr>
+															<td>'.$row1['number'].'
+															<td>'.$row1['name'].'
+														</tr>
+													';
+													$alternate=true;
+													}
+													$row1 = mysqli_fetch_assoc($result1);
+												}
+											echo '
+												</table>
+											';
+										}
+									}
+								?>
+							</div> <?php }?>
+						</div>
 					</div>
 				</div>
 			</div>

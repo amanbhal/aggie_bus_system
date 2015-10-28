@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+session_start(); // start up your PHP session! 
+?>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
@@ -72,6 +75,19 @@
 		<h2 style="color:white"><b>AGGIE SPIRIT</b></h2>
 	</div>
 	
+	<?php
+		if(isset($_POST['email'])){
+			if($_POST['email']=="admin@tamu.edu" and $_POST['password']=="admin") {
+				$enter=true;
+				$_SESSION['enter']="true";
+			}
+			else{
+				$enter=false;
+				$_SESSION['enter']="false";
+			}
+		}
+	?>
+	
 	<div class="jumbotron" style="margin:0">
 		<div class="row">
 			  <div class="col-lg-3 col-sm-3">
@@ -80,8 +96,8 @@
 					  <ul class="nav navbar-nav">
 						<li><a href="#">Home</a></li>
 						<li><a href="route.php">Route Info</a></li>
-						<li><a href="#">Update Routes</a></li>
-						<li><a href="#">Add/Remove Drivers</a></li>
+						<?php if(isset($_POST['email'])){if($enter){ echo '<li><a href="route.php">Update Routes</a></li>
+						<li><a href="drivers.php">Add/Remove Drivers</a></li> ';}}?>
 						<!--<li><a href="#">Reviews <span class="badge">1,118</span></a></li>-->
 					  </ul>
 				  </div>
@@ -97,7 +113,7 @@
 									<div class="col-lg-3 col-sm-3"></div>
 									<div class="input-group margin-bottom-sm col-lg-6 col-sm-6">
 										<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-										<input type="email" class="form-control" id="email" placeholder="Email address">
+										<input type="email" class="form-control" name="email" placeholder="Email address">
 									</div>
 									<div class="col-lg-3 col-sm-3"></div>
 								</div>
@@ -107,7 +123,7 @@
 									<div class="col-lg-3 col-sm-3"></div>
 									<div class="input-group margin-bottom-sm col-lg-6 col-sm-6">
 									  <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-									  <input id="password" class="form-control" type="password" placeholder="Password">
+									  <input name="password" class="form-control" type="password" placeholder="Password">
 									</div>
 									<div class="col-lg-3 col-sm-3"></div>
 								</div>

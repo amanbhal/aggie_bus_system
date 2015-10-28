@@ -84,8 +84,8 @@
 					  <ul class="nav navbar-nav">
 						<li><a href="index.php">Home</a></li>
 						<li><a href="route.php">Route Info</a></li>
-						<li><a href="#">Update Routes</a></li>
-						<li><a href="drivers.php">Add/Remove Drivers</a></li>
+						<li><a href="update_route.php">Update Routes</a></li>
+						<li><a href="#">Add/Remove Drivers</a></li>
 						<!--<li><a href="#">Reviews <span class="badge">1,118</span></a></li>-->
 					  </ul>
 				  </div>
@@ -95,25 +95,16 @@
 				<div class="jumbotron" style="background-color:#558C89; margin:0">
 					<div class="container">
 						<?php
-							if(isset($_POST['number']) and isset($_POST['name']) and isset($_POST['no_of_bus']) and isset($_POST['intervals']) and isset($_POST['starting_point']) and isset($_POST['stops'])){
-								if($_POST['number']!=null and $_POST['name']!=null and $_POST['no_of_bus']!=null and $_POST['intervals']!=null and $_POST['starting_point']!=null and $_POST['stops']!=null) {
+							if(isset($_POST['number'])){
+								if($_POST['number']!="Select Route" and $_POST['firstname']!=null and $_POST['lastname']!=null) {
 									$number = $_POST['number'];
-									$name = $_POST['name'];
-									$no_of_bus = $_POST['no_of_bus'];
-									$intervals = $_POST['intervals'];
-									$starting_point = $_POST['starting_point'];
-									$myInputs = $_POST["stops"];
+									$firstname = $_POST['firstname'];
+									$lastname = $_POST['lastname'];
 									$conct = mysqli_connect($mysql_host,$mysql_user,$mysql_password,$mysql_database)	 or die("Could not connect to database!");
-									foreach ($myInputs as $eachInput) {
-										$result1 = mysqli_query($conct,"SELECT stop_id FROM stops WHERE stop_name='$eachInput'");
-										$stop = mysqli_fetch_assoc($result1);
-										$stop_result = $stop["stop_id"];
-										$query = "INSERT INTO route VALUES('$number','$name','$stop_result','$no_of_bus','$intervals','$starting_point')";
-										$result2 = mysqli_query($conct, $query);
-									}
+									$result1 = mysqli_query($conct,"INSERT INTO drivers VALUES(NULL,'$number','$firstname','$lastname')");
 									echo '
 									<div class="alert alert-success">
-										<strong>Success!</strong> New Route has been added successfully.
+										<strong>Success!</strong> New Driver has been added successfully.
 									</div>
 									';
 								}
@@ -123,7 +114,7 @@
 							if(isset($_POST['del_route'])){
 								if($_POST['del_route']!="Select Route") {
 									$query = "DELETE FROM route WHERE number='".$_POST['del_route']."'";
-									$conct = mysqli_connect("localhost","root","","aggie_spirit_new")	 or die("Could not connect to database!");
+									$conct = mysqli_connect($mysql_host,$mysql_user,$mysql_password,$mysql_database)	 or die("Could not connect to database!");
 									$result2 = mysqli_query($conct, $query);
 								}
 								echo '
@@ -134,73 +125,33 @@
 							}
 						?>
 						<fieldset>
-							<legend align="center"><b>ADD A ROUTE</b></legend>
+							<legend align="center"><b>ADD A DRIVER</b></legend>
 							<br><br>
 							<form action="#" method="post">
 								<div class="row">
-									<div class="col-lg-2 col-md-2" style="padding-right:5px">
-										<input type="text" name="number" placeholder="Route Number">
-									</div>
-									<div class="col-lg-2 col-md-2"></div>
-									<div class="col-lg-2 col-md-2">
-										<input type="text" name="name" placeholder="Route Name">
-									</div>
-									<div class="col-lg-2 col-md-2"></div>
-									<div class="col-lg-2 col-md-2">
-										<input type="number" name="no_of_bus" placeholder="No. of buses">
-									</div>
-								</div>
-								<br>
-								<div class="row">
-									<div class="col-lg-2 col-md-2">
-										<input type="number" name="intervals" placeholder="Bus Interval">
-									</div>
-									<div class="col-lg-2 col-md-2"></div>
-									<div class="col-lg-2 col-md-2">
-										<input type="text" name="starting_point" placeholder="Starting Point">
-									</div>
-								</div>
-								<br><br>
-								<div class="row">
-									<div class="row">
-										<div class="col-lg-5"></div>
-										<button class="btn btn-success" id="add_stops" onclick="duplicate('add_list0');" type="button" class="btn btn-default">ADD STOPS</button>
-									</div>
-									<br><br>
-									<div class="row" id="add_list0">
-										<div class="col-lg-1"></div>
-										<div class="col-lg-6">
-											<select class="form-control" name="stops[]" style="width: 50%" >
-												<option>Select Source</option>
-													<?php
-														$conct = mysqli_connect($mysql_host,$mysql_user,$mysql_password,$mysql_database)	 or die("Could not connect to database!");
-														$result = mysqli_query($conct,"SELECT stop_name FROM stops");
+									<div class="col-lg-4 col-md-2" style="padding-right:5px">
+										<select class="form-control" name="number" style="width: 50%" >
+											<option>Select Route</option>
+												<?php
+													$conct = mysqli_connect($mysql_host,$mysql_user,$mysql_password,$mysql_database)	 or die("Could not connect to database!");
+													$result = mysqli_query($conct,"SELECT DISTINCT(number), name FROM route");
+													$row = mysqli_fetch_assoc($result);
+													while($row)
+													{
+														echo '<option>'.$row['number'].'</option>';
 														$row = mysqli_fetch_assoc($result);
-														while($row)
-														{
-															echo '<option>'.$row['stop_name'].'</option>';
-															$row = mysqli_fetch_assoc($result);
-														}
-													?>
-											</select>
-										</div>
-										<button class="btn btn-warning" id="add_stops" onclick="remove(this);" type="button" class="btn btn-default">REMOVE STOPS</button>
-										<br><br>
+													}
+												?>
+										</select>
 									</div>
-										<script>
-											var i=0;
-											function duplicate(divName) {
-												var original = document.getElementById(divName);
-												var clone = original.cloneNode(true); // "deep" clone
-												clone.id = "add_list" + ++i; // there can only be one element with an ID
-												clone.onclick = duplicate; // event handlers are not cloned
-												original.parentNode.appendChild(clone);
-											}
-											function remove(sender) {
-												var parent = sender.parentNode;
-												$(parent).remove();
-											}
-										</script>
+									
+									<div class="col-lg-2 col-md-2">
+										<input type="text" name="firstname" placeholder="First Name">
+									</div>
+									<div class="col-lg-2 col-md-2"></div>
+									<div class="col-lg-2 col-md-2">
+										<input type="text" name="lastname" placeholder="Last Name">
+									</div>
 								</div>
 								<br><br>
 								<div class="row" align="center">
@@ -209,14 +160,15 @@
 							</form>
 						</fieldset>
 						<br><br><br>
-						<fieldset>
-								<legend align="center"><b>REMOVE A ROUTE</b></legend>
+						<div class="drivers_show">
+							<fieldset>
+								<legend align="center"><b>SEE DRIVERS ON A ROUTE</b></legend>
 								<br><br>
 								<form action="#" method="post">
 									<div class="row">
 										<div class="col-lg-2 col-md-2"></div>
 										<div class="col-lg-6 col-md-6">
-											<select class="form-control" name="del_route" style="width: 50%" >
+											<select class="form-control" name="driver_route" style="width: 50%" >
 												<option>Select Route</option>
 													<?php
 														$conct = mysqli_connect($mysql_host,$mysql_user,$mysql_password,$mysql_database)	 or die("Could not connect to database!");
@@ -232,12 +184,56 @@
 										</div>
 							
 										<div class="col-lg-2 col-md-2">
-											<button class="btn btn-danger" type="submit" class="btn btn-default">DELETE</button>
+											<button class="btn btn-danger" type="submit" class="btn btn-default">SHOW</button>
 										</div>
 										<div class="col-lg-2 col-md-2"></div>
 									</div>
 								</form>
 							</fieldset>
+							<br><br>
+							<?php if(isset($_POST['driver_route'])){ ?><div class="drivers_show jumbotron container">
+								<?php
+									if(isset($_POST['driver_route'])){
+										if($_POST['driver_route']!="Select Route") {
+											$conct = mysqli_connect($mysql_host,$mysql_user,$mysql_password,$mysql_database)	 or die("Could not connect to database!");
+											$result = mysqli_query($conct,"SELECT firstname, lastname FROM drivers WHERE route_number='".$_POST['driver_route']."'");
+											$row = mysqli_fetch_assoc($result);
+											echo '
+												<table class="table">
+													<tr>
+														<th>First Name
+														<th>Last Name
+													</tr>
+													'; $alternate=true; 
+													while($row) {
+														if($alternate==true) {
+															echo '
+															<tr class="success">
+																<td>'.$row['firstname'].'
+																<td>'.$row['lastname'].'
+															</tr>
+														';
+														$alternate=false;
+														}
+														else {
+															echo '
+															<tr>
+																<td>'.$row['firstname'].'
+																<td>'.$row['lastname'].'
+															</tr>
+														';
+														$alternate=true;
+														}
+														$row = mysqli_fetch_assoc($result);
+													}
+												echo '
+													</table>
+												';
+										}
+									}
+								?>
+							</div> <?php } ?>
+						</div>
 					</div>
 				</div>
 			</div>
